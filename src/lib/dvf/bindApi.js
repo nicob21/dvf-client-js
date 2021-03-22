@@ -37,11 +37,6 @@ module.exports = () => {
     ledger: {
       getPath: compose(require('../stark/ledger/getPath')),
       getPublicKey: compose(require('../stark/ledger/getPublicKey')),
-      createWithdrawalData: compose(
-        require('../stark/ledger/createWithdrawalData')
-      ),
-      createFastWithdrawalPayload: compose(require('../stark/ledger/createFastWithdrawalPayload')),
-      createDepositData: compose(require('../stark/ledger/createDepositData')),
       createSignedTransfer: compose(
         require('../stark/ledger/createSignedTransfer')
       ),
@@ -174,8 +169,6 @@ module.exports = () => {
   dvf.withdrawOnchain = compose(require('../../api/withdrawOnchain'))
   dvf.fullWithdrawalRequest = compose(require('../../api/fullWithdrawalRequest'))
   dvf.ledger = {
-    deposit: compose(require('../../api/ledger/deposit')),
-    withdraw: compose(require('../../api/ledger/withdraw')),
     transfer: compose(require('../../api/ledger/transfer')),
     transferUsingVaultIdAndStarkKey: compose(require('../../api/ledger/transferUsingVaultIdAndStarkKey'))
   }

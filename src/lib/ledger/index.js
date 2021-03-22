@@ -14,9 +14,9 @@ const getTxSignature = async (dvf, tx, path) => {
     const Transport = selectTransport(dvf.isBrowser)
     const transport = await Transport.create()
     const eth = new Eth(transport)
-    const {address} = await eth.getAddress(path)
+    const { address } = await eth.getAddress(path)
     const starkPath = dvf.stark.ledger.getPath(address)
-    const {tokenAddress, quantization} = dvf.token.getTokenInfoByTokenId(tx.token)
+    const { tokenAddress, quantization } = dvf.token.getTokenInfoByTokenId(tx.token)
     const transferQuantization = new BN(quantization)
     const transferAmount = new BN(tx.amount)
 
@@ -42,7 +42,7 @@ const getTxSignature = async (dvf, tx, path) => {
 
     return starkSignature
   } else {
-    throw new DVFError(`Unsupported stark transaction type: ${tx.type}`, {tx})
+    throw new DVFError(`Unsupported stark transaction type: ${tx.type}`, { tx })
   }
 }
 
@@ -64,5 +64,12 @@ module.exports = (dvf) => {
     )
   }
 
-  return {sign, getPublicKey}
+  const populateTxContractData = async (tokenAddress, transferQuantization = null) => {
+    const Transport = selectTransport(dvf.isBrowser)
+    const transport = await Transport.create()
+    const eth = new Eth(transport)
+    await dvf.token.provideContractData(eth, tokenAddress, transferQuantization)
+  }
+
+  return { sign, getPublicKey, populateTxContractData }
 }

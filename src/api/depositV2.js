@@ -22,7 +22,7 @@ const endpoint = '/v1/trading/deposits'
 
 module.exports = async (dvf, data, nonce, signature) => {
   const { token, amount } = validateArg0(data)
-
+  const { dvfStarkProvider } = dvf
   const starkKey = dvf.config.starkKeyHex
 
   const tokenInfo = dvf.token.getTokenInfoOrThrow(token)
@@ -58,7 +58,9 @@ module.exports = async (dvf, data, nonce, signature) => {
       }
     }
   })
-
+  if (dvfStarkProvider.populateTxContractData) {
+    await dvfStarkProvider.populateTxContractData(tokenInfo.tokenAddress)
+  }
   const onChainDepositPromise = contractDepositFromStarkTx(dvf, tx, {transactionHashCb})
 
   const transactionHash = await transactionHashPromise
