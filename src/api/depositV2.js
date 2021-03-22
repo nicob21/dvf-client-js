@@ -59,7 +59,7 @@ module.exports = async (dvf, data, nonce, signature) => {
     }
   })
   if (dvfStarkProvider.populateTxContractData) {
-    await dvfStarkProvider.populateTxContractData(tokenInfo.tokenAddress)
+    await dvfStarkProvider.populateTxContractData(tokenInfo.tokenAddress, tokenInfo.quantization)
   }
   const onChainDepositPromise = contractDepositFromStarkTx(dvf, tx, {transactionHashCb})
 
