@@ -18,7 +18,7 @@ const validateArg0 = validateWithJoi(schema)('INVALID_METHOD_ARGUMENT')({
 })
 
 module.exports = async (dvf, depositData, starkPublicKey, nonce, signature, contractWalletAddress, encryptedTradingKey) => {
-
+  const { dvfStarkProvider } = dvf
   const starkKey = starkPublicKey.x
 
   const registrationData = {
@@ -68,6 +68,9 @@ module.exports = async (dvf, depositData, starkPublicKey, nonce, signature, cont
         }
       }
     })
+    if (dvfStarkProvider.populateTxContractData) {
+      await dvfStarkProvider.populateTxContractData(tokenInfo.tokenAddress, tokenInfo.quantization)
+    }
     // Don't await for the tx, resolve on tx hash and the integration will take care of the rest
     const onChainRegisterDeposit = contractRegisterAndDepositFromStarkTx(dvf, userRegistered.deFiSignature, tx, {transactionHashCb})
 

@@ -69,6 +69,7 @@ module.exports = (dvf) => {
     const transport = await Transport.create()
     const eth = new Eth(transport)
     await dvf.token.provideContractData(eth, tokenAddress, transferQuantization)
+    await transport.close()
   }
 
   return { sign, getPublicKey, populateTxContractData }
