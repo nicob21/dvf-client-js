@@ -2,6 +2,7 @@ const FP = require('lodash/fp')
 const BN = require('bignumber.js')
 const Eth = require('@ledgerhq/hw-app-eth').default
 const DVFError = require('../dvf/DVFError')
+const createSignedOrder = require('../stark/ledger/createSignedOrder')
 const selectTransport = require('./selectTransport')
 
 const transferTransactionTypes = [
@@ -10,7 +11,11 @@ const transferTransactionTypes = [
 ]
 
 const getTxSignature = async (dvf, tx, path) => {
-  if (transferTransactionTypes.includes(tx.type)) {
+  if (tx.type != null) {
+    if (!(transferTransactionTypes.includes(tx.type))) {
+      throw new DVFError(`Unsupported stark transaction type: ${tx.type}`, {tx})
+    }
+
     const Transport = selectTransport(dvf.isBrowser)
     const transport = await Transport.create()
     const eth = new Eth(transport)
@@ -42,7 +47,11 @@ const getTxSignature = async (dvf, tx, path) => {
 
     return starkSignature
   } else {
-    throw new DVFError(`Unsupported stark transaction type: ${tx.type}`, {tx})
+    const { starkSignature } = await createSignedOrder(
+      dvf, tx, path, { dontGetPublicKey: true }
+    )
+
+    return starkSignature
   }
 }
 
